@@ -12,35 +12,30 @@
 typedef unsigned char bool;
 
 bool segfault;
-bool invoked;
 jmp_buf escape;
 
 void captureSegfault(int signum);
-void test(const char *function, int size, int element, bool expectSegfault, void *(*alloc) (size_t));
+void test(const char *function, int size, int element, bool expectSegfault, void *(*alloc)(size_t));
 
 int main(int argc, char *argv[])
 {
     test("malloc", 23, 22, FALSE, malloc);
-    test("malloc", 23, 23, FALSE, malloc);    
-    //test("palloc", 23, 22, FALSE, palloc);
-    //test("palloc", 23, 23, TRUE, palloc); 
-    
+    test("malloc", 23, 23, FALSE, malloc);
+    test("palloc", 23, 22, FALSE, palloc);
+    test("palloc", 23, 23, TRUE, palloc);
     test("palloc", 10000, 9999, FALSE, palloc);
-    test("palloc", 10000, 10000, TRUE, palloc);        
+    test("palloc", 10000, 10000, TRUE, palloc);
     return 0;
 }
 
-void test(const char *function, int size, int element, bool expectSegfault, void *(*alloc) (size_t))
+void test(const char *function, int size, int element, bool expectSegfault, void *(*alloc)(size_t))
 {
     signal(SIGSEGV, captureSegfault);
-    char *memory = (char *) (*alloc) (size);
+    char *memory = (char *)(*alloc)(size);
 
     segfault = FALSE;
-    invoked = FALSE;
-    setjmp(escape);
-    if (invoked == FALSE)
+    if (!setjmp(escape))
     {
-        invoked = TRUE;
         *(memory + element) = 0;
     }
 
@@ -52,14 +47,12 @@ void captureSegfault(int signum)
 {
     sigset_t block_sigint, prev_mask;
     sigemptyset(&block_sigint);
-    sigaddset(&block_sigint, SIGSEGV);
 
     if (sigprocmask(SIG_SETMASK, &block_sigint, &prev_mask) < 0)
     {
         perror("Couldn't block SIGSEGV");
         return;
     }
-
     segfault = TRUE;
     longjmp(escape, 1);
 }
