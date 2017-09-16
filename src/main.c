@@ -22,8 +22,11 @@ int main(int argc, char *argv[])
 {
     test("malloc", 23, 22, FALSE, malloc);
     test("malloc", 23, 23, FALSE, malloc);    
-    test("palloc", 23, 22, FALSE, palloc);
-    test("palloc", 23, 23, TRUE, palloc);    
+    //test("palloc", 23, 22, FALSE, palloc);
+    //test("palloc", 23, 23, TRUE, palloc); 
+    
+    test("palloc", 10000, 9999, FALSE, palloc);
+    test("palloc", 10000, 10000, TRUE, palloc);        
     return 0;
 }
 

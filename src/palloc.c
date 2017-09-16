@@ -12,5 +12,5 @@ void *palloc(size_t size)
     char *memory = (char *) mmap(NULL, pages, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
     mprotect((void *)(memory + pages - PageSize), PageSize, PROT_NONE);
-    return (memory + PageSize - size);
+    return (memory + pages - PageSize - size);
 }
