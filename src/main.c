@@ -36,7 +36,10 @@ void test(const char *function, int size, int element, bool expectSegfault, void
     segfault = FALSE;
     if (!setjmp(escape))
     {
-        *(memory + element) = 0;
+        for (int i = 0; i <= element; ++i)
+        {
+            *(memory + i) = 0;
+        }
     }
 
     assert(segfault == expectSegfault);
