@@ -19,12 +19,15 @@ void test(const char *function, int size, int element, bool expectSegfault, void
 
 int main(int argc, char *argv[])
 {
+    void *x = palloc(4);
+    pfree(x);
+    return 1;
     test("malloc", 23, 22, FALSE, malloc);
     test("malloc", 23, 23, FALSE, malloc);
-    test("palloc", 23, 22, FALSE, palloc);
-    test("palloc", 23, 23, TRUE, palloc);
-    test("palloc", 10000, 9999, FALSE, palloc);
-    test("palloc", 10000, 10000, TRUE, palloc);
+    test("palloc", 23, 22, FALSE, __palloc);
+    test("palloc", 23, 23, TRUE, __palloc);
+    test("palloc", 10000, 9999, FALSE, __palloc);
+    test("palloc", 10000, 10000, TRUE, __palloc);
     return 0;
 }
 
